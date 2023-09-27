@@ -1,9 +1,9 @@
 <?php
 define("DB_DRIVER", "mysql");
-define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_DATABASE", "mvc");
+define("DB_HOST", "srv479.hstgr.io");
+define("DB_USER", "u634266207_sarana");
+define("DB_PASS", "@Sarana001");
+define("DB_DATABASE", "u634266207_sarana");
 define("DB_CHARSET", "utf8");
 /*
 return array(

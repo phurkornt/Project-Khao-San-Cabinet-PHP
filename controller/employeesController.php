@@ -39,12 +39,12 @@ class EmployeesController{
     */
     public function index(){
         //We create the employee object
-        $employee=new Employee($this->Connection);
+        // $employee=new Employee($this->Connection);
         //We get all the employees
-        $employees=$employee->getAll();
+        // $employees=$employee->getAll();
         //We load the index view and pass values to it
         $this->view("test",array(
-            "employees"=>$employees,
+            "employees"=>"FF",
             "titulo" => "PHP MVC"
         ));
     }
