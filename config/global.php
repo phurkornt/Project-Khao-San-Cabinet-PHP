@@ -1,4 +1,4 @@
 <?php
-define("CONTROLLER_DEFECTO", "Employees");
+define("CONTROLLER_DEFECTO", "login");
 define("DEFECT_ACTION", "index");
 ?>

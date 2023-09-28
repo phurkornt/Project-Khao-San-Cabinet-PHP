@@ -8760,7 +8760,7 @@ a:focus{
     }
 }
 .bg-login-image{
-    background:url(/img/rice.webp);
+    background:url(../img/rice.webp);
     background-position:center;
     background-size:cover
 }

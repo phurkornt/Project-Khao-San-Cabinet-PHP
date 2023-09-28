@@ -1,7 +1,13 @@
 <?php
+session_start();
 //Global setting
 require_once 'config/global.php';
+require_once 'config/develop.php';
 //We load the controller and execute the action
+
+
+
+
 if(isset($_GET["controller"])){
     // We load the instance of the corresponding controller
     $controllerObj=cargarControlador($_GET["controller"]);
@@ -9,21 +15,34 @@ if(isset($_GET["controller"])){
     launchAction($controllerObj);
 }else{
     // We load the default controller instance
-    $controllerObj=cargarControlador(CONTROLLER_DEFECTO);
+    // $controllerObj=cargarControlador(CONTROLLER_DEFECTO);
     // We launch the action
-    launchAction($controllerObj);
+    if(isset($_SESSION['ID'])){
+        $controllerObj=cargarControlador('dashboard');
+        launchAction($controllerObj);
+    }else{
+        $controllerObj=cargarControlador(CONTROLLER_DEFECTO);
+        launchAction($controllerObj);
+    }
 }
+
+
 function cargarControlador($controller){
     switch ($controller) {
-        case 'employees':
-            $strFileController='controller/employeesController.php';
+        case 'login':
+            $strFileController='controller/loginController.php';
             require_once $strFileController;
-            $controllerObj=new employeesController();
+            $controllerObj=new LoginController();
+            break;
+        case 'dashboard':
+            $strFileController='controller/dashboardController.php';
+            require_once $strFileController;
+            $controllerObj=new DashboardController();
             break;
         default:
-            $strFileController='controller/employeesController.php';
+            $strFileController='controller/dashboardController.php';
             require_once $strFileController;
-            $controllerObj=new EmployeesController();
+            $controllerObj=new DashboardController();
             break;
     }
     return $controllerObj;

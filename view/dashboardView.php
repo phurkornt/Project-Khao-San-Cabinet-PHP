@@ -1,3 +1,11 @@
+<?php 
+     if(!isset($_SESSION['ID'])){
+        header('Location: index.php');
+     }
+?>
+
+
+
 <?php include "includes/header.php" ?>
 
 

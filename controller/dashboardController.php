@@ -1,10 +1,10 @@
 <?php
-class EmployeesController{
+class DashboardController{
     private $conectar;
     private $Connection;
     public function __construct() {
 		require_once  __DIR__ . "/../core/Conectar.php";
-        require_once  __DIR__ . "/../model/employee.php";
+        require_once  __DIR__ . "/../model/machineModel.php";
         $this->conectar=new Conectar();
         $this->Connection=$this->conectar->Connection();
     }
@@ -43,8 +43,8 @@ class EmployeesController{
         //We get all the employees
         // $employees=$employee->getAll();
         //We load the index view and pass values to it
-        $this->view("test",array(
-            "employees"=>"FF",
+        $this->view("dashboard",array(
+            "name"=>$_SESSION['name'],
             "titulo" => "PHP MVC"
         ));
     }
