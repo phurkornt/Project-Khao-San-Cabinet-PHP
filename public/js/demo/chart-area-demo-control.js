@@ -120,7 +120,6 @@ function initChartArea(data){
       }
     }
   });
-
   var template_machine = {
     type: 'line',
     data: {
