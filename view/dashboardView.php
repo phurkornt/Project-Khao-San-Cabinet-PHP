@@ -1,7 +1,7 @@
-<?php 
-     if(!isset($_SESSION['ID'])){
-        header('Location: index.php');
-     }
+<?php
+if (!isset($_SESSION['ID'])) {
+    header('Location: index.php');
+}
 ?>
 
 
@@ -10,20 +10,16 @@
 
 
 
-
 <!-- Content All Time -->
 
-<div class="row">
+<!-- <div class="row">
 
-    <!-- Area Chart -->
     <div class="col-xl-8 col-lg-7">
         <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Statistics Machine</h6>
 
             </div>
-            <!-- Card Body -->
             <div class="card-body">
                 <div class="chart-area">
                     <canvas id="myAreaChart"></canvas>
@@ -32,14 +28,11 @@
         </div>
     </div>
 
-    <!-- Pie Chart -->
     <div class="col-xl-4 col-lg-5">
         <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Statistics All Machine</h6>
             </div>
-            <!-- Card Body -->
             <div class="card-body">
                 <div class="chart-pie pt-4 pb-2">
                     <canvas id="myPieChart"></canvas>
@@ -58,9 +51,7 @@
             </div>
         </div>
     </div>
-</div>
-
-
+</div> -->
 <!-- Content m1 -->
 <div class="row">
 
@@ -134,12 +125,25 @@
 
 <!-- Page level custom scripts -->
 <script src="public/js/demo/chart-area-demo-control.js"></script>
-<script src="public/js/demo/chart-pie-demo-control.js"></script>
+<!-- <script src="public/js/demo/chart-pie-demo-control.js"></script> -->
 <script>
-let machine = [{
-    id: 1
-}]
-initChartArea(JSON.stringify(machine));
+    function getCurrentWeekDays() {
+        const today = new Date();
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - today.getDay());
+        const weekDays = [];
+        for (let i = 0; i < 7; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            weekDays.push(currentDate.getDate() + ""); // Push only the day part
+        }
+        return weekDays;
+    }
+    generateChartAreaM1(JSON.stringify({
+        elementID: "chartM1",
+        labelWeek: getCurrentWeekDays()
+    }))
+    // initChartArea(JSON.stringify(machine));
 </script>
 
 

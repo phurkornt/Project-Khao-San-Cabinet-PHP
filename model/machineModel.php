@@ -8,7 +8,7 @@ class Employee {
     private $email;
     private $phone;
     public function __construct($Connection) {
-		$this->Connection = $Connection;
+        $this->Connection = $Connection;
     }
     public function getId() {
         return $this->id;
@@ -126,6 +126,6 @@ class Employee {
             echo 'Failed DELETE (deleteBy): ' . $e->getMessage();
             return -1;
         }
-    }
+}
 }
 ?>

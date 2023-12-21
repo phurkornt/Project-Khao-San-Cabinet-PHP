@@ -36,7 +36,7 @@
     <script src="public/vendor/chart.js/Chart.min.js"></script>
     <!-- For alert  -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
 </head>
 
 <body id="page-top">
@@ -45,8 +45,8 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion navMenu" 
-        style="background-image:url(public/img/backgroud.jpg);opacity:0.95;" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion navMenu"
+            style="background-image:url(public/img/backgroud.jpg);opacity:0.95;" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
@@ -89,7 +89,6 @@
                     </div>
                 </div>
             </li>
-            
 
 
 
@@ -98,7 +97,8 @@
 
 
 
-            
+
+
         </ul>
         <!-- End of Sidebar -->
 
@@ -121,21 +121,22 @@
                     <ul class="navbar-nav ml-auto" ">
 
                         <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 large"><?php echo $datos['name'] ?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="public/img/undraw_profile.svg">
+                        <li class=" nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span
+                                class="mr-2 d-none d-lg-inline text-gray-600 large"><?php echo $datos['name'] ?></span>
+                            <img class="img-profile rounded-circle" src="public/img/undraw_profile.svg">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="userDropdown">
+                            <a onclick="logout_fuc()" class="dropdown-item" href="#" data-toggle="modal"
+                                data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
                             </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a onclick="logout_fuc()" class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
+                        </div>
                         </li>
 
                     </ul>
@@ -146,21 +147,20 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-     
-<script>
-    function logout_fuc(){
-        Swal.fire({
-            title: 'Are you sure?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href="index.php?controller=login&action=logout";
-            }
-        })
-    }
-    
-</script>
+
+                    <script>
+                    function logout_fuc() {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "index.php?controller=login&action=logout";
+                            }
+                        })
+                    }
+                    </script>
