@@ -1,5 +1,6 @@
 <?php
-class Employee {
+class MachineModel
+{
     private $table = "employees";
     private $Connection;
     private $id;
@@ -7,40 +8,86 @@ class Employee {
     private $Surname;
     private $email;
     private $phone;
-    public function __construct($Connection) {
+    public function __construct($Connection)
+    {
         $this->Connection = $Connection;
     }
-    public function getId() {
-        return $this->id;
+    public function getDataWeek($week)
+    {
+        $array = array();
+        foreach ($week as $key) {
+            $sql = "
+                    SELECT COUNT(*) as count FROM machine_log WHERE machine_id  = 1  AND DATE(datetime)  = '$key';
+                ";
+            $consultation = $this->Connection->prepare($sql);
+            $consultation->execute();
+            $resultados = $consultation->fetch(PDO::FETCH_OBJ);
+            array_push($array, $resultados->count);
+        }
+
+        // $this->Connection = null;
+        return $array;
     }
-    public function setId($id) {
+    public function getDuration()
+    {
+        $array = array();
+        $sql = "
+        SELECT 
+        id,
+        MIN(date(datetime)) AS start_time,
+        MAX(date(datetime)) AS end_time
+      FROM machine_log
+      WHERE machine_id  = 1
+      
+        ";
+        $consultation = $this->Connection->prepare($sql);
+        $consultation->execute();
+        $resultados = $consultation->fetch(PDO::FETCH_OBJ);
+        array_push($array, $resultados->start_time);
+        array_push($array, $resultados->end_time);
+        // $this->Connection = null; //cierre de conexión
+        return $array;
+    }
+
+
+    public function setId($id)
+    {
         $this->id = $id;
     }
-    public function getName() {
+    public function getName()
+    {
         return $this->Name;
     }
-    public function setName($Name) {
+    public function setName($Name)
+    {
         $this->Name = $Name;
     }
-    public function getSurname() {
+    public function getSurname()
+    {
         return $this->Surname;
     }
-    public function setSurname($Surname) {
+    public function setSurname($Surname)
+    {
         $this->Surname = $Surname;
     }
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
-    public function getphone() {
+    public function getphone()
+    {
         return $this->phone;
     }
-    public function setphone($phone) {
+    public function setphone($phone)
+    {
         $this->phone = $phone;
     }
-    public function save(){
+    public function save()
+    {
         $consultation = $this->Connection->prepare("INSERT INTO " . $this->table . " (Name,Surname,email,phone)
                                         VALUES (:Name,:Surname,:email,:phone)");
         $result = $consultation->execute(array(
@@ -52,7 +99,8 @@ class Employee {
         $this->Connection = null;
         return $result;
     }
-    public function update(){
+    public function update()
+    {
         $consultation = $this->Connection->prepare("
             UPDATE " . $this->table . "
             SET
@@ -72,7 +120,8 @@ class Employee {
         $this->Connection = null;
         return $resultado;
     }
-    public function getAll(){
+    public function getAll()
+    {
         $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone FROM " . $this->table);
         $consultation->execute();
         /* Fetch all of the remaining rows in the result set */
@@ -80,7 +129,8 @@ class Employee {
         $this->Connection = null; //cierre de conexión
         return $resultados;
     }
-    public function getById($id){
+    public function getById($id)
+    {
         $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone
                                                 FROM " . $this->table . "  WHERE id = :id");
         $consultation->execute(array(
@@ -91,7 +141,8 @@ class Employee {
         $this->Connection = null; //connection closure
         return $resultado;
     }
-    public function getBy($column,$value){
+    public function getBy($column, $value)
+    {
         $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone
                                                 FROM " . $this->table . " WHERE :column = :value");
         $consultation->execute(array(
@@ -102,7 +153,8 @@ class Employee {
         $this->Connection = null; //connection closure
         return $resultados;
     }
-    public function deleteById($id){
+    public function deleteById($id)
+    {
         try {
             $consultation = $this->Connection->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
             $consultation->execute(array(
@@ -114,7 +166,8 @@ class Employee {
             return -1;
         }
     }
-    public function deleteBy($column,$value){
+    public function deleteBy($column, $value)
+    {
         try {
             $consultation = $this->Connection->prepare("DELETE FROM " . $this->table . " WHERE :column = :value");
             $consultation->execute(array(
@@ -126,6 +179,5 @@ class Employee {
             echo 'Failed DELETE (deleteBy): ' . $e->getMessage();
             return -1;
         }
+    }
 }
-}
-?>

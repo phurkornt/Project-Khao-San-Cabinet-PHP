@@ -315,7 +315,7 @@ function generateChartAreaM1(data) {
   var myLineChartM1 = new Chart(chart, {
     type: 'line',
     data: {
-      labels: data.labelWeek,
+      labels: data.labelWeek.map((x) => `วันที่ ${x}`),
       datasets: [{
         label: "จำนวนการใช้งาน",
         lineTension: 0.3,
@@ -329,7 +329,7 @@ function generateChartAreaM1(data) {
         pointHoverBorderColor: "rgba(78, 115, 223, 1)",
         pointHitRadius: 10,
         pointBorderWidth: 2,
-        data: [4, 50, 10, 100, 20, 50, 100],
+        data: [...data.weekCount],
       }],
     },
     options: {
@@ -358,7 +358,7 @@ function generateChartAreaM1(data) {
         yAxes: [{
 
           ticks: {
-            maxTicksLimit: 5,
+            maxTicksLimit: 3,
             padding: 10,
             // Include a dollar sign in the ticks
             callback: function (value, index, values) {

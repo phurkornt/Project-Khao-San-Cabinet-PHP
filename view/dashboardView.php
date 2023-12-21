@@ -54,6 +54,18 @@ if (!isset($_SESSION['ID'])) {
 </div> -->
 <!-- Content m1 -->
 <div class="row">
+    <?php
+
+    // echo $datos["titulo"];implode(', ', $array)
+    // foreach ($datos["titulo"] as $row) {
+    //     print_r($row['count']);
+    // }
+
+    // print_r($datos["titulo"]);
+    // echo $datos["dateDuration"]['month'];
+    // echo implode('', $datos["dateDuration"]);
+    // echo implode(', ', $datos["weekCount"]);
+    ?>
 
     <!-- Area Chart -->
     <div class="col-xl-8 col-lg-7">
@@ -91,7 +103,10 @@ if (!isset($_SESSION['ID'])) {
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     ระยะเวลาการใช้งาน</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">1 เดือน 25 วัน</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo $datos["dateDuration"]['month'] . " เดือน"; ?>
+                                    <?php echo $datos["dateDuration"]['day'] . " วัน"; ?>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -107,7 +122,9 @@ if (!isset($_SESSION['ID'])) {
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     จำนวนการใช้งาน</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">50 ครั้ง</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo array_sum($datos["weekCount"]) ?> ครั้ง
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
@@ -139,9 +156,12 @@ if (!isset($_SESSION['ID'])) {
         }
         return weekDays;
     }
+    let countDate = '<?php echo implode(',', $datos["weekCount"]); ?>';
+    console.log(countDate);
     generateChartAreaM1(JSON.stringify({
         elementID: "chartM1",
-        labelWeek: getCurrentWeekDays()
+        labelWeek: getCurrentWeekDays(),
+        weekCount: countDate.split(',')
     }))
     // initChartArea(JSON.stringify(machine));
 </script>
