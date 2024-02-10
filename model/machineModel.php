@@ -12,12 +12,12 @@ class MachineModel
     {
         $this->Connection = $Connection;
     }
-    public function getDataWeek($week)
+    public function getDataWeek($table, $week)
     {
         $array = array();
         foreach ($week as $key) {
             $sql = "
-                    SELECT COUNT(*) as count FROM machine_log WHERE machine_id  = 1  AND DATE(datetime)  = '$key';
+                    SELECT COUNT(*) as count FROM $table WHERE DATE(datetime)  = '$key';
                 ";
             $consultation = $this->Connection->prepare($sql);
             $consultation->execute();
@@ -28,7 +28,7 @@ class MachineModel
         // $this->Connection = null;
         return $array;
     }
-    public function getDuration()
+    public function getDuration($table)
     {
         $array = array();
         $sql = "
@@ -36,9 +36,7 @@ class MachineModel
         id,
         MIN(date(datetime)) AS start_time,
         MAX(date(datetime)) AS end_time
-      FROM machine_log
-      WHERE machine_id  = 1
-      
+        FROM $table
         ";
         $consultation = $this->Connection->prepare($sql);
         $consultation->execute();
@@ -49,135 +47,130 @@ class MachineModel
         return $array;
     }
 
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    public function getName()
-    {
-        return $this->Name;
-    }
-    public function setName($Name)
-    {
-        $this->Name = $Name;
-    }
-    public function getSurname()
-    {
-        return $this->Surname;
-    }
-    public function setSurname($Surname)
-    {
-        $this->Surname = $Surname;
-    }
-    public function getEmail()
-    {
-        return $this->email;
-    }
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-    public function getphone()
-    {
-        return $this->phone;
-    }
-    public function setphone($phone)
-    {
-        $this->phone = $phone;
-    }
-    public function save()
-    {
-        $consultation = $this->Connection->prepare("INSERT INTO " . $this->table . " (Name,Surname,email,phone)
-                                        VALUES (:Name,:Surname,:email,:phone)");
-        $result = $consultation->execute(array(
-            "Name" => $this->Name,
-            "Surname" => $this->Surname,
-            "email" => $this->email,
-            "phone" => $this->phone
-        ));
-        $this->Connection = null;
-        return $result;
-    }
-    public function update()
-    {
-        $consultation = $this->Connection->prepare("
-            UPDATE " . $this->table . "
-            SET
-                Name = :Name,
-                Surname = :Surname,
-                email = :email,
-                phone = :phone
-            WHERE id = :id
-        ");
-        $resultado = $consultation->execute(array(
-            "id" => $this->id,
-            "Name" => $this->Name,
-            "Surname" => $this->Surname,
-            "email" => $this->email,
-            "phone" => $this->phone
-        ));
-        $this->Connection = null;
-        return $resultado;
-    }
     public function getAll()
     {
-        $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone FROM " . $this->table);
+        $sql = "
+            SELECT 'M1' AS machine_log_1, COUNT(*) AS count FROM machine_log_1
+            UNION ALL
+            SELECT 'M2' AS machine_log_2, COUNT(*) AS count FROM machine_log_2
+            UNION ALL
+            SELECT 'M3' AS machine_log_3, COUNT(*) AS count FROM machine_log_3
+            UNION ALL
+            SELECT 'M4' AS machine_log_4, COUNT(*) AS count FROM machine_log_4
+            UNION ALL
+            SELECT 'M5' AS machine_log_5, COUNT(*) AS count FROM machine_log_5;
+        ";
+        $consultation = $this->Connection->prepare($sql);
         $consultation->execute();
-        /* Fetch all of the remaining rows in the result set */
-        $resultados = $consultation->fetchAll();
-        $this->Connection = null; //cierre de conexión
-        return $resultados;
-    }
-    public function getById($id)
-    {
-        $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone
-                                                FROM " . $this->table . "  WHERE id = :id");
-        $consultation->execute(array(
-            "id" => $id
-        ));
-        /*Fetch all of the remaining rows in the result set*/
-        $resultado = $consultation->fetchObject();
-        $this->Connection = null; //connection closure
-        return $resultado;
-    }
-    public function getBy($column, $value)
-    {
-        $consultation = $this->Connection->prepare("SELECT id,Name,Surname,email,phone
-                                                FROM " . $this->table . " WHERE :column = :value");
-        $consultation->execute(array(
-            "column" => $column,
-            "value" => $value
-        ));
-        $resultados = $consultation->fetchAll();
-        $this->Connection = null; //connection closure
-        return $resultados;
-    }
-    public function deleteById($id)
-    {
-        try {
-            $consultation = $this->Connection->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
-            $consultation->execute(array(
-                "id" => $id
-            ));
-            $Connection = null;
-        } catch (Exception $e) {
-            echo 'Failed DELETE (deleteById): ' . $e->getMessage();
-            return -1;
+        $result = $consultation->fetchAll();
+
+        $name = array();
+        $value = array();
+        $data = array();
+
+        foreach ($result as $i) {
+            array_push($name, $i[0]);
+            array_push($value, $i[1]);
         }
+        array_push($data, $name);
+        array_push($data, $value);
+
+        /**
+         * result =>
+         * [[name,value],[name,value],[name,value],[name,value],[name,value]]
+         */
+        return $data;
     }
-    public function deleteBy($column, $value)
+    public function getWeek($table)
     {
-        try {
-            $consultation = $this->Connection->prepare("DELETE FROM " . $this->table . " WHERE :column = :value");
-            $consultation->execute(array(
-                "column" => $value,
-                "value" => $value,
-            ));
-            $Connection = null;
-        } catch (Exception $e) {
-            echo 'Failed DELETE (deleteBy): ' . $e->getMessage();
-            return -1;
+        $sql = "
+            SELECT DAY(datetime) AS date, COUNT(*) AS count
+            FROM $table 
+            WHERE DATE(datetime) >= DATE_SUB(CURDATE(), INTERVAL DAYOFWEEK(CURDATE()) - 1 DAY)
+            AND DATE(datetime) <= DATE_ADD(CURDATE(), INTERVAL 6 - DAYOFWEEK(CURDATE()) DAY)
+            GROUP BY DATE(datetime);
+        ";
+        $consultation = $this->Connection->prepare($sql);
+        $consultation->execute();
+        $result = $consultation->fetchAll();
+
+        // print_r($result);
+        $day = array();
+        $value = array();
+        $data = array();
+
+        foreach ($result as $i) {
+            array_push($day, $i[0]);
+            array_push($value, $i[1]);
         }
+        array_push($data, $day);
+        array_push($data, $value);
+
+        /**
+         * result =>
+         * [[name,value],[name,value],[name,value],[name,value],[name,value]]
+         */
+        return $data;
+    }
+    public function getMonth($table)
+    {
+        $sql = "
+            SELECT DAY(datetime) AS date, COUNT(*) AS count
+            FROM $table 
+            WHERE DATE(datetime) >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+            AND DATE(datetime) <= LAST_DAY(CURDATE())
+            GROUP BY DATE(datetime);
+        ";
+        $consultation = $this->Connection->prepare($sql);
+        $consultation->execute();
+        $result = $consultation->fetchAll();
+
+        // print_r($result);
+        $day = array();
+        $value = array();
+        $data = array();
+
+        foreach ($result as $i) {
+            array_push($day, $i[0]);
+            array_push($value, $i[1]);
+        }
+        array_push($data, $day);
+        array_push($data, $value);
+
+        /**
+         * result =>
+         * [[name,value],[name,value],[name,value],[name,value],[name,value]]
+         */
+        return $data;
+    }
+    public function getYear($table)
+    {
+        $sql = "
+            SELECT EXTRACT(MONTH FROM datetime) AS month, COUNT(*) AS count
+            FROM $table 
+            WHERE YEAR(datetime) = YEAR(CURDATE())
+            GROUP BY EXTRACT(MONTH FROM datetime);
+        ";
+        $consultation = $this->Connection->prepare($sql);
+        $consultation->execute();
+        $result = $consultation->fetchAll();
+
+        // print_r($result);
+        $month = array();
+        $value = array();
+        $data = array();
+
+        foreach ($result as $i) {
+            array_push($month, $i[0]);
+            array_push($value, $i[1]);
+        }
+        array_push($data, $month);
+        array_push($data, $value);
+
+        /**
+         * result =>
+         * [[name,value],[name,value],[name,value],[name,value],[name,value]]
+         */
+        return $data;
     }
 }

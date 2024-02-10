@@ -309,13 +309,14 @@ function initChartArea(data) {
 }
 
 
-function generateChartAreaM1(data) {
+export function generateChartAreaMachine(data) {
   data = JSON.parse(data)
+  console.log(data)
   var chart = document.getElementById(data.elementID);
-  var myLineChartM1 = new Chart(chart, {
+  var myLineChart = new Chart(chart, {
     type: 'line',
     data: {
-      labels: data.labelWeek.map((x) => `วันที่ ${x}`),
+      labels: data.label,
       datasets: [{
         label: "จำนวนการใช้งาน",
         lineTension: 0.3,

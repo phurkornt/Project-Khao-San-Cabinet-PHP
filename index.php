@@ -8,49 +8,51 @@ require_once 'config/develop.php';
 
 
 
-if(isset($_GET["controller"])){
+if (isset($_GET["controller"])) {
     // We load the instance of the corresponding controller
-    $controllerObj=cargarControlador($_GET["controller"]);
+    $controllerObj = cargarControlador($_GET["controller"]);
     //We launch the action
     launchAction($controllerObj);
-}else{
+} else {
     // We load the default controller instance
     // $controllerObj=cargarControlador(CONTROLLER_DEFECTO);
     // We launch the action
-    if(isset($_SESSION['ID'])){
-        $controllerObj=cargarControlador('dashboard');
+    if (isset($_SESSION['ID'])) {
+        $controllerObj = cargarControlador('dashboard');
         launchAction($controllerObj);
-    }else{
-        $controllerObj=cargarControlador(CONTROLLER_DEFECTO);
+    } else {
+        $controllerObj = cargarControlador(CONTROLLER_DEFECTO);
         launchAction($controllerObj);
     }
 }
 
 
-function cargarControlador($controller){
+function cargarControlador($controller)
+{
     switch ($controller) {
         case 'login':
-            $strFileController='controller/loginController.php';
+            $strFileController = 'controller/loginController.php';
             require_once $strFileController;
-            $controllerObj=new LoginController();
+            $controllerObj = new LoginController();
             break;
         case 'dashboard':
-            $strFileController='controller/dashboardController.php';
+            $strFileController = 'controller/dashboardController.php';
             require_once $strFileController;
-            $controllerObj=new DashboardController();
+            $controllerObj = new DashboardController();
             break;
         default:
-            $strFileController='controller/dashboardController.php';
+            $strFileController = 'controller/dashboardController.php';
             require_once $strFileController;
-            $controllerObj=new DashboardController();
+            $controllerObj = new DashboardController();
             break;
     }
     return $controllerObj;
 }
-function launchAction($controllerObj){
-    if(isset($_GET["action"])){
+function launchAction($controllerObj)
+{
+    if (isset($_GET["action"])) {
         $controllerObj->run($_GET["action"]);
-    }else{
+    } else {
         $controllerObj->run(DEFECT_ACTION);
     }
 }
@@ -71,4 +73,3 @@ function cargarControlador($controller){
     return $controllerObj;
 }
 */
-?>

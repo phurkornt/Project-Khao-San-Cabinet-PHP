@@ -20,11 +20,8 @@ class DashboardController
             case "index":
                 $this->index();
                 break;
-            case "alta":
-                $this->crear();
-                break;
-            case "detalle":
-                $this->detalle();
+            case "test":
+                $this->index();
                 break;
             case "actualizar":
                 $this->actualizar();
@@ -45,7 +42,6 @@ class DashboardController
         $startDateString = $duration[0];
         $endDateString = $duration[1];
 
-        // Create DateTime objects from the date strings
         $startDate = new DateTime($startDateString);
         $endDate = new DateTime($endDateString);
 
@@ -59,7 +55,6 @@ class DashboardController
         $array['month'] = $months;
         $array['day'] = $days;
 
-        // echo 'Duration: ' . $months . ' months and ' . $days . ' days';
         return $array;
     }
     public function getCurrentWeekDays()
@@ -80,45 +75,59 @@ class DashboardController
     public function index()
     {
         $modelo = new MachineModel($this->Connection);
-        $weekCount = $modelo->getDataWeek($this->getCurrentWeekDays());
-        $dateDuration = $modelo->getDuration();
+
+        $filter = "week";
+        $counter = array();
+        $dateDuration = array();
+        $machineAll = $modelo->getAll();
+        $machine = array();
+        $machineDuration = array();
+
+        for ($i = 1; $i <= 5; $i++) {
+            $duration = $this->formatDuration($modelo->getDuration("machine_log_$i"));
+            array_push($machineDuration, $duration);
+        }
+        // print_r();
+
+        if (isset($_GET["filter"])) {
+            $filter =  $_GET["filter"];
+        }
+
+        if ($filter == "year") {
+            for ($i = 1; $i <= 5; $i++) {
+                $data = $modelo->getYear("machine_log_$i");
+                array_push($machine, $data);
+            }
+        } else if ($filter == "month") {
+            for ($i = 1; $i <= 5; $i++) {
+                $data = $modelo->getMonth("machine_log_$i");
+                array_push($machine, $data);
+            }
+        } else {
+            $filter = "week";
+            for ($i = 1; $i <= 5; $i++) {
+                $data = $modelo->getWeek("machine_log_$i");
+                array_push($machine, $data);
+            }
+        }
+
         $this->view("dashboard", array(
             "test" => $this->getCurrentWeekDays(),
-            "weekCount" => $weekCount,
             "name" => $_SESSION['name'],
-            "dateDuration" => $this->formatDuration($dateDuration),
+            "counter" => $counter,
+            "dateDuration" => $dateDuration,
+            "machineAll" => $machineAll,
+            "machine" => json_encode($machine),
+            "machineDuration" => $machineDuration,
+            "filter" => $filter,
         ));
     }
-    /**
-     * Loads the employees home page with the list of
-     * employees getting from the model.
-     *
-     */
-    public function detalle()
-    {
-        //We load the model
-        $modelo = new Employee($this->Connection);
-        //We recover the employee from the BBDD
-        $employee = $modelo->getById($_GET["id"]);
-        //We load the detail view and pass values to it
-        $this->view("detalle", array(
-            "employee" => $employee,
-            "titulo" => "Detalle Employee"
-        ));
-    }
-    /**
-     * Create a new employee from the POST parameters
-     * and reload the index.php.
-     *
-     */
+
+
     public function crear()
     {
     }
-    /**
-     * Update employee from POST parameters
-     * and reload the index.php.
-     *
-     */
+
     public function actualizar()
     {
         if (isset($_POST["id"])) {
@@ -127,10 +136,7 @@ class DashboardController
         }
         header('Location: index.php');
     }
-    /**
-     * Create the view that we pass to it with the indicated data.
-     *
-     */
+
     public function view($vista, $datos)
     {
         $data = $datos;
